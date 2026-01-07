@@ -44,7 +44,7 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ├── Server.java  
 ├── ClientHandler.java  
@@ -64,9 +64,9 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 ---
 
-## 🔄 Communication Protocol
+## Communication Protocol
 
-### Chat Commands
+### Chat Commands/Protocols
 | Command | Description |
 |------|-----------|
 | `ENTER_USERNAME` | Username handshake |
@@ -77,7 +77,7 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 ---
 
-### 📁 File Transfer Protocol (Protocol-Enforced Pairing)
+### File Transfer Protocol (Protocol-Enforced Pairing)
 
 1. Sender requests file transfer  
 FILE_REQUEST|receiver|filename|size
