@@ -32,8 +32,7 @@ This project follows **real-world client–server architecture** and uses a **pr
 
 ## 🏗 Architecture Overview
 
-Client ──(CHAT: 7777)──▶ Server ◀──(CHAT: 7777)── Client
-
+Client ──(CHAT: 7777)──▶ Server ◀──(CHAT: 7777)── Client   
 Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 
@@ -47,10 +46,10 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 ## 📂 Project Structure
 
-├── Server.java
-├── ClientHandler.java
-├── Client.java
-└── README.md
+├── Server.java  
+├── ClientHandler.java  
+├── Client.java  
+└── README.md  
 
 
 ### File Description
@@ -75,19 +74,6 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 | `BROADCAST|text` | Broadcast message |
 | `ONLINE_USERS|list` | Online users |
 | `LOGOUT` | Disconnect |
-
----
-
-## 🔄 Communication Protocol
-
-### Chat Commands/Protocols
-|       Command       |    Description     |
-|---------|-----------|
-| `ENTER_USERNAME`    | Username handshake |
-| `MESSAGE|user|text` | Private message    |
-| `BROADCAST|text`    | Broadcast message  |
-| `ONLINE_USERS|list` | Online users       |
-| `LOGOUT`            | Disconnect         |
 
 ---
 
