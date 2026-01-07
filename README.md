@@ -38,9 +38,9 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 
 ### Ports Used
-| Port | Purpose |
-|----|--------|
-| 7777 | Chat & control messages |
+| Port |        Purpose              |
+|------|-----------------------------|
+| 7777 | Chat & control messages     |
 | 8888 | File transfer (binary data) |
 
 ---
@@ -82,20 +82,20 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 ### File Transfer Protocol (Protocol-Enforced Pairing)
 
 1. Sender requests file transfer  
-FILE_REQUEST|receiver|filename|size
+`FILE_REQUEST|receiver|filename|size`
 
 3. Receiver receives offer  
-FILE_OFFER|sender|filename|size
+`FILE_OFFER|sender|filename|size`
 
 4. Receiver accepts  
-FILE_ACCEPT|sender|filename
+`FILE_ACCEPT|sender|filename`
 
 4. Server authorizes transfer  
-FILE_START|sender|receiver|filename|size
+`FILE_START|sender|receiver|filename|size`
 
-5. Both clients connect to `FILE_PORT (8888)`
+6. Both clients connect to `FILE_PORT (8888)`
 
-6. Server relays file bytes
+7. Server relays file bytes
     File transfer starts **only after FILE_START**  
     Prevents wrong pairing and empty files
 
