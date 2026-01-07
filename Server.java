@@ -24,7 +24,7 @@ public class Server {
         try (ServerSocket server = new ServerSocket(CHAT_PORT)) {
             while (true) {
                 Socket socket = server.accept();
-                new Thread(new ClientHandler(socket)).start();
+                new Thread(new ClientHandler(socket)).start();  //handles a new client now
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ public class Server {
     }
 
     private static void startFileRelayServer() {
-        try (ServerSocket fileServer = new ServerSocket(FILE_PORT)) {
+        try (ServerSocket fileServer = new ServerSocket(FILE_PORT)) {   //try-with-resources;;; Java will automatically close the server socket once program ends or any exception occurs
             while (true) {
                 Socket socket = fileServer.accept();
                 synchronized (waiting) {
@@ -48,6 +48,23 @@ public class Server {
             e.printStackTrace();
         }
     }
+    /*
+        A problem of file begin received from other computer but of always size 0 striked.
+
+        Server relay was one-directional means if If receiver connects first then no data flows
+
+        Assumption it made
+
+            “The first socket is always the sender
+            The second socket is always the receiver”
+
+        Why this failed across PCs
+
+            Network timing is unpredictable
+            Sometimes receiver connects first
+            Server then listens to the wrong direction
+            Result: 0-byte files
+    */
 
     private static void relay(Socket a, Socket b) {
         new Thread(() -> pipe(a, b)).start();
@@ -55,21 +72,21 @@ public class Server {
     }
 
     private static void pipe(Socket from, Socket to) {
-        try (
+        try (   //try-with-resources ensures resouces are closed automatically after they are used
             InputStream in = from.getInputStream();
             OutputStream out = to.getOutputStream()
         ) {
-            byte[] buf = new byte[4096];
-            int r;
-            while ((r = in.read(buf)) != -1) {
-                out.write(buf, 0, r);
+            byte[] buffer = new byte[4096];    //this is a temporary byte container(4KB), used to move data in chunks, not one byte at a time
+            int read;   //stores how many bytes were actually read from the sender, read can be less be less than 4096 especially near the EOF
+            while((read = in.read(buffer)) != -1){    //read() reads bytes from sender's socket and stores them in buffer, RETURNS "no. of bytes read" OR "-1 when sender closes stream (EOF)"
+                out.write(buffer, 0, read);     //writes exactly the bytes just read from index 0 upto 'read' bytes (we must not write the whole buffer blindly)
             }
         } catch (Exception ignored) {}
     }
 
 
     public static void broadcast(String msg) {
-        synchronized (clients) {
+        synchronized (clients) {    //acquire lock on clients
             for (ClientHandler ch : clients.values()) {
                 ch.send(msg);
             }

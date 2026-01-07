@@ -8,6 +8,7 @@ public class ClientHandler implements Runnable {
     private PrintWriter out;
     private String username;
 
+    // stores last requested file size (needed for FILE_START)
     private long pendingFileSize;
     private String pendingFileName;
 
@@ -16,15 +17,16 @@ public class ClientHandler implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() {     //Java internally calls run() in a new thread
         try {
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
+            //USERNAME HANDSHAKE
             out.println("ENTER_USERNAME");
             username = br.readLine();
 
-            synchronized (Server.clients) {
+            synchronized (Server.clients) {     //acquire lock on Server.clients
                 if (Server.clients.containsKey(username)) {
                     out.println("ERROR|Username taken");
                     socket.close();
@@ -35,14 +37,16 @@ public class ClientHandler implements Runnable {
 
             System.out.println(username + " connected");
             Server.broadcast("USER_ONLINE|" + username);
+            //send online users list
             send("ONLINE_USERS|" + String.join(",", Server.clients.keySet()));
 
+            //MESSAGE LOOP
             String input;
             while ((input = br.readLine()) != null) {
                 handleMessage(input);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally {
             disconnect();
         }
@@ -61,12 +65,20 @@ public class ClientHandler implements Runnable {
                 Server.broadcast("MESSAGE|" + username + "|" + parts[1]);
                 break;
 
+            case "GET_USERS":
+                getUsersList();
+                break;
+
             case "FILE_REQUEST":
                 handleFileRequest(parts[1], parts[2], Long.parseLong(parts[3]));
                 break;
 
             case "FILE_ACCEPT":
                 handleFileAccept(parts[1], parts[2]);
+                break;
+
+            case "ERROR":
+                Server.clients.get(username).send("Error while sending file or message. Try again !!");
                 break;
 
             case "LOGOUT":
@@ -83,7 +95,7 @@ public class ClientHandler implements Runnable {
 
         fileName = fileName.replaceAll("[/\\\\]", "_");
 
-        ClientHandler target = Server.clients.get(toUser);
+        ClientHandler target = Server.clients.get(toUser);  //find the sender
         if (target != null) {
             pendingFileSize = size;
             pendingFileName = fileName;
@@ -97,10 +109,32 @@ public class ClientHandler implements Runnable {
         ClientHandler sender = Server.clients.get(senderName);
         if (sender != null) {
             long size = sender.pendingFileSize;
-            sender.send("FILE_START|" + senderName + "|" + username + "|" + fileName + "|" + size);
-            send("FILE_START|" + senderName + "|" + username + "|" + fileName + "|" + size);
+            sender.send("FILE_START|" + senderName + "|" + username + "|" + fileName + "|" + size); //send FILE_START to sender
+            send("FILE_START|" + senderName + "|" + username + "|" + fileName + "|" + size);    //send FILE_START to receiver
         }
     }
+    /*
+    Sender      Server       Receiver
+    |             |            |
+    | FILE_REQUEST|            |
+    |------------>|            |
+    |             | FILE_OFFER |
+    |             |----------->|
+    |             |            |
+    |             | FILE_ACCEPT|
+    |             |<-----------|
+    |             |            |
+    | FILE_START  | FILE_START |
+    |<------------|----------->|
+    |             |            |
+    | connect FILE_PORT        |
+    |------------>             |
+    |             | connect FILE_PORT
+    |             |<-----------|
+    |             |            |
+    |===== FILE BYTES RELAY =====|
+    */
+
 
     private void sendPrivate(String toUser, String msg) {
         ClientHandler target = Server.clients.get(toUser);
@@ -111,6 +145,12 @@ public class ClientHandler implements Runnable {
 
     public void send(String msg) {
         out.println(msg);
+    }
+
+    private void getUsersList(){
+        ClientHandler target = Server.clients.get(username);
+        if(target != null)
+            target.send("ONLINE_USERS|" + String.join(",", Server.clients.keySet()));
     }
 
     private void disconnect() {
