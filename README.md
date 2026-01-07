@@ -19,6 +19,7 @@ This project follows **real-world client–server architecture** and uses a **pr
 - Broadcast messaging (send message to all users)
 - Private messaging using `@username`
 - Real-time online/offline user updates
+- Error handling
 
 ### File Transfer Features
 - Send files to a **specific user only**
@@ -67,13 +68,14 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 ## Communication Protocol
 
 ### Chat Commands/Protocols
-| Command | Description |
-|------|-----------|
-| `ENTER_USERNAME` | Username handshake |
-| `MESSAGE|user|text` | Private message |
-| `BROADCAST|text` | Broadcast message |
-| `ONLINE_USERS|list` | Online users |
-| `LOGOUT` | Disconnect |
+|      Command        |     Description    |
+|---------------------|--------------------|
+| `ENTER_USERNAME`    | Username handshake |
+| `MESSAGE|user|text` | Private message    |
+| `BROADCAST|text`    | Broadcast message  |
+| `ONLINE_USERS|list` | Online users       |
+| `ERROR`             | Error from client  |
+| `LOGOUT`            | Disconnect         |
 
 ---
 
