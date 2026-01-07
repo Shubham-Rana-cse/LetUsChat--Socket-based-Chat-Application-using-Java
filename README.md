@@ -33,6 +33,7 @@ This project follows **real-world client–server architecture** and uses a **pr
 ## 🏗 Architecture Overview
 
 Client ──(CHAT: 7777)──▶ Server ◀──(CHAT: 7777)── Client
+
 Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 
 
@@ -74,22 +75,6 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 | `BROADCAST|text` | Broadcast message |
 | `ONLINE_USERS|list` | Online users |
 | `LOGOUT` | Disconnect |
-
----
-
-### 📁 File Transfer Protocol (Protocol-Enforced Pairing)
-
-1. Sender requests file transfer  
-
-### File Description
-- **Server.java**  
-  Starts the chat server and file relay server.
-
-- **ClientHandler.java**  
-  Handles one connected client (chat + file protocol).
-
-- **Client.java**  
-  Console-based client application.
 
 ---
 
