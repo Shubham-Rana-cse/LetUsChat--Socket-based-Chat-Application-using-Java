@@ -68,14 +68,14 @@ Client ──(FILE: 8888)──▶ Server ◀──(FILE: 8888)── Client
 ## Communication Protocol
 
 ### Chat Commands/Protocols
-|      Command        |     Description    |
-|---------------------|--------------------|
-| `ENTER_USERNAME`    | Username handshake |
-| "MESSAGE|user|text" | Private message    |
-| `BROADCAST|text`    | Broadcast message  |
-| `ONLINE_USERS|list` | Online users       |
-| `ERROR`             | Error from client  |
-| `LOGOUT`            | Disconnect         |
+|      Command          |     Description    |
+|-----------------------|--------------------|
+| `ENTER_USERNAME`      | Username handshake |
+| `MESSAGE\|user\|text` | Private message    |
+| `BROADCAST\|text`     | Broadcast message  |
+| `ONLINE_USERS\|list`  | Online users       |
+| `ERROR`               | Error from client  |
+| `LOGOUT`              | Disconnect         |
 
 ---
 
